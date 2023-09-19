@@ -1,0 +1,25 @@
+server {
+    listen 80 default_server;
+    server_name _;
+
+    root /usr/share/nginx/dist;
+    index index.htm index.html;
+
+    # security relative
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header Content-Security-Policy "frame-ancestors ${CSP_FRAME_ANCESTORS_HOSTS}" always;
+
+    location = /_health {
+        return 200;
+        access_log off;
+    }
+
+    location / {
+        if ($uri = '/index.html') {
+            add_header Cache-Control "no-store, must-revalidate" always;
+        }
+        try_files $uri /index.html;
+    }
+}

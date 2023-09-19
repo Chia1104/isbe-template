@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build:react": {
+      "outputs": ["dist"],
+      "inputs": ["package.json", "src/**", "public/**"]
+    },
+    "app:start": {
+      "cache": false,
+      "persistent": true
+    },
+    "app:lint": {},
+    "app:test": {},
+    "app:type:check": {},
+    "app:format:check": {}
+  }
+}

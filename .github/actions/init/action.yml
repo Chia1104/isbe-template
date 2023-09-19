@@ -1,0 +1,20 @@
+name: '💽️  Init'
+description: 'Localized Init'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: '🔧  pnpm'
+      id: pnpm-setup
+      uses: pnpm/action-setup@v2.2.4
+      with:
+        version: 8
+
+    - name: '💽️  Node'
+      id: node-setup
+      uses: actions/setup-node@v3
+      with:
+        # architecture: 'x64'
+        cache-dependency-path: pnpm-lock.yaml
+        cache: 'pnpm'
+        node-version: 18

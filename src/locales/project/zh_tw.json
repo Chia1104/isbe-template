@@ -1,0 +1,39 @@
+{
+  "title.index.page": "首頁",
+  "title.foo.page": "Foo",
+  "title.logout": "登出",
+
+  "caption": "",
+
+  "label": "",
+
+  "default": "",
+
+  "unit": "",
+
+  "status": "",
+
+  "relation": "",
+
+  "placeholder": "",
+
+  "description": "",
+
+  "notice": "",
+
+  "action": "",
+
+  "error": "",
+  "error.zod.password.min": "密碼長度須大於 8 個字符",
+  "error.zod.password.regex": "密碼其中有一個數字、一個大寫字母、一個特殊字符",
+  "error.zod.phone": "請輸入有效的手機號碼",
+  "error.zod.required": "必填",
+
+  "notice.snackbar.otp.errorMessage.tooManyAttempts": "驗證碼已發送，請三分鐘後再試",
+  "notice.snackbar.otp.success": "驗證碼已成功寄出",
+  "notice.snackbar.otp.error": "取得驗證碼失敗，請稍後再試",
+  "notice.snackbar.otp.ServerError": "取得簡訊驗證碼服務異常，請稍後再試",
+
+  "action.send.verification.code": "發送驗證碼",
+  "action.resend.verification.code": "重新發送驗證碼"
+}

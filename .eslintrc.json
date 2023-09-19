@@ -1,0 +1,76 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    //    "standard-with-typescript",
+    "prettier"
+  ],
+  "overrides": [
+    {
+      // enable the rule specifically for TypeScript files
+      "files": ["*.ts", "*.mts", "*.cts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off"
+      }
+    },
+    {
+      "files": ["*.test.js", "*.json"],
+      "rules": {
+        "no-unused-expressions": "off"
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off",
+    "react/display-name": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/prefer-ts-expect-error": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-invalid-void-type": "warn",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-confusing-void-expression": [
+      "error",
+      { "ignoreArrowShorthand": true }
+    ],
+    "@typescript-eslint/triple-slash-reference": [
+      "error",
+      { "path": "always", "types": "always", "lib": "always" }
+    ],
+    "prettier/prettier": ["warn"],
+    "no-restricted-syntax": [
+      "error",
+      {
+        // ❌ useQuery({ onSuccess: '...', onError: '...', onSettled; '...' }) onSuccess, onError and onSettled are not allowed in useQuery
+        "selector": "CallExpression[callee.name=useQuery] > ObjectExpression > Property[key.name=onSuccess], CallExpression[callee.name=useQuery] > ObjectExpression > Property[key.name=onError], CallExpression[callee.name=useQuery] > ObjectExpression > Property[key.name=onSettled]",
+        "message": "onSuccess, onError and onSettled are not allowed in useQuery"
+      }
+    ]
+  }
+}

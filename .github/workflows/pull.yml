@@ -1,0 +1,74 @@
+name: '▶️ Pull'
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - converted_to_draft
+      - labeled
+
+concurrency:
+  group: pull-${{ github.ref }}-1
+  cancel-in-progress: true
+
+env:
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+jobs:
+  pull:
+    name: '👷️  CI'
+#    if: github.event.pull_request.draft == false && !contains(github.event.head_commit.message, '[skip ci]')
+    if: false
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: '🐙️  Checkout'
+        id: pull-checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: '💽️  Init'
+        id: pull-init
+        uses: './.github/actions/init'
+
+      - name: '📦  Install'
+        id: pull-install
+        uses: './.github/actions/install@master'
+
+#      - name: '🔺️  Cache (turbo)'
+#        id: pull-cache-turbo
+#        uses: './.github/actions/cache-turbo'
+#        with:
+#          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+#          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+      - name: '🚨️  Lint, TypeCheck, Test'
+        id: pull-lint
+        uses: './.github/actions/lint'
+        with:
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+#      # https://docs.github.com/en/actions/learn-github-actions/expressions
+#      - name: '📛  Commit Message'
+#        id: pull-commit-message
+#        run: |
+#          echo "message=$(git log --no-merges -1 --oneline)" >> $GITHUB_OUTPUT
+
+#      - name: '🏗️  Build'
+#        id: pull-build
+#        uses: './.github/actions/build'
+#        with:
+#          BUILD_COMMAND: 'build'
+#          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+#          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}

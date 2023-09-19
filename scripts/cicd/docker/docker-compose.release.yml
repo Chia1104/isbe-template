@@ -1,0 +1,16 @@
+# @format
+
+version: "3.7"
+services:
+  app-deploy:
+    image: ${DEPLOY_APP_DOCKER_IMAGE}:${RELEASE_IMAGE_VERSION}
+    build:
+      context: ./
+      args:
+        DOCKER_BUILDKIT: 1
+      dockerfile: ./scripts/cicd/docker/Dockerfile
+      secrets:
+        - gitcredentials
+secrets:
+  gitcredentials:
+    file: ./scripts/cicd/docker/gitcredentials

@@ -1,0 +1,38 @@
+{
+  "themeName": "exampleTheme",
+  "languages": {
+    "zh_tw": {
+      "locale": "zh_tw",
+      "label": "繁體中文",
+      "phoneCode": "+886",
+      "id": 1
+    }
+  },
+  "permissionType": {
+    "filed": "select",
+    "description": "權限類型 none role acl",
+    "value": "acl"
+  },
+  "featureAcl": {
+    "filed": "input",
+    "description": "功能存取控制列表",
+    "value": {}
+  },
+  "enableMetaAPI": {
+    "filed": "input",
+    "description": "是否啟動 meta api",
+    "refetchInterval": 900000,
+    "value": false
+  },
+  "enableMeAPI": {
+    "filed": "input",
+    "description": "是否啟動 me api",
+    "refetchInterval": 900000,
+    "value": true
+  },
+  "enableMaintenance": {
+    "filed": "input",
+    "description": "是否啟動 maintenance logic",
+    "value": false
+  }
+}
