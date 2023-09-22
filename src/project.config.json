@@ -21,7 +21,6 @@
   "enableMetaAPI": {
     "filed": "input",
     "description": "是否啟動 meta api",
-    "refetchInterval": 900000,
     "value": false
   },
   "enableMeAPI": {

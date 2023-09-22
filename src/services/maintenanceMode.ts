@@ -4,6 +4,9 @@ import some from "lodash/some";
 import dayjs from "dayjs";
 import { globalActions } from "@/store/global.slice";
 import { redirect } from "react-router-dom";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 export const handleMaintenanceMode = (
   maintenanceMode: MaintenanceMode[],
@@ -38,4 +41,27 @@ export const handleMaintenanceMode = (
 
   loaderRequest.store.dispatch(globalActions.setMaintenanceMode(matchingMode));
   return matchingMode! as MaintenanceMode & { isNear?: boolean };
+};
+
+// const loader = withMaintenanceMode((loaderRequest: LoaderRequest) => {}, options)
+export const withMaintenanceMode = <TResult = unknown>(
+  loader: (loaderRequest: LoaderRequest) => Promise<TResult> | TResult | null,
+  options: { maintenanceMode: MaintenanceMode[]; enable?: boolean }
+) => {
+  const { maintenanceMode, enable = true } = options;
+  return async (loaderRequest: LoaderRequest) => {
+    const matchingMode = handleMaintenanceMode(
+      maintenanceMode,
+      loaderRequest,
+      enable
+    );
+    if (
+      !loaderRequest.request.url.includes("/maintenance") &&
+      matchingMode &&
+      !matchingMode.isNear
+    ) {
+      return redirect("/maintenance");
+    }
+    return await loader(loaderRequest);
+  };
 };
