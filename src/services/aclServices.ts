@@ -23,7 +23,8 @@ export const getAcl = (
     env = ["local", "beta"],
     roles: useDevModeRoles = ["superAdmin"],
   } = useDevMode;
-  const data = initialData ?? queryClient.getQueryData<MeResponse>([queryKey.me]);
+  const data =
+    initialData ?? queryClient.getQueryData<MeResponse>([queryKey.me]);
   const roles = data?.data?.roles;
   const user = data?.data;
 

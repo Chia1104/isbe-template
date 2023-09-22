@@ -79,6 +79,15 @@ export interface BasicTableProps<TData> {
       defaultProps: TableCellProps
     ) => Partial<TableCellProps>;
   };
+  disablePagination?: boolean;
+  children?: (
+    data: Array<TData & { id: string | number }>,
+    ctx?: {
+      hiddenRows?: Array<keyof (TData & { id: string | number })>;
+      tableCellProps?: TableCellProps;
+      tableRowProps?: TableRowProps;
+    }
+  ) => ReactNode;
 }
 
 export type State = {

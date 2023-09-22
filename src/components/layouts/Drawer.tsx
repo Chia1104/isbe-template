@@ -1,10 +1,5 @@
 import React, { useEffect, useState, type FC } from "react";
-import {
-  Outlet,
-  useLocation,
-  matchRoutes,
-  useParams,
-} from "react-router-dom";
+import { Outlet, useLocation, matchRoutes, useParams } from "react-router-dom";
 import {
   Box,
   Toolbar,

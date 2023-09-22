@@ -41,7 +41,7 @@ import {
 } from "./utils";
 import { useTableContext, TableProvider } from "./context";
 
-function BasicTableHead<TData>(props: BasicTableHeadProps<TData>) {
+export function BasicTableHead<TData>(props: BasicTableHeadProps<TData>) {
   const {
     tableHeadCellProps,
     order,
@@ -155,6 +155,8 @@ function BasicTableWithGeneric<TData>(
     experimental,
     fallbackTableRowProps,
     fallbackTableCellProps,
+    disablePagination = false,
+    children,
   }: BasicTableProps<TData>,
   ref: ForwardedRef<BasicTableRef<TData>>
 ) {
@@ -266,140 +268,150 @@ function BasicTableWithGeneric<TData>(
                   tableHeadCellProps={tableHeadCellProps}
                   tableSortLabelProps={tableSortLabelProps}
                 />
-                <TableBody>
-                  {visibleRows.map((row, index) => {
-                    return (
-                      <Fragment key={row.id?.toString()}>
-                        {index === visibleRows.length - 1 ? (
-                          <TableRow
-                            ref={lastItem as any}
-                            tabIndex={-1}
-                            {...tableRowProps}>
-                            {row &&
-                              Object.keys(row).map((key) => {
-                                if (!hiddenRows.includes(key as any)) {
-                                  return (
-                                    <TableCell
-                                      {...tableCellProps}
-                                      {...usePropsFromKey?.(
-                                        key as keyof TData,
-                                        tableCellProps ?? {}
-                                      )}
-                                      className={cn(
-                                        tableCellProps?.className,
-                                        usePropsFromKey?.(
+                {children ? (
+                  children(visibleRows, {
+                    hiddenRows,
+                    tableCellProps,
+                    tableRowProps,
+                  })
+                ) : (
+                  <TableBody>
+                    {visibleRows.map((row, index) => {
+                      return (
+                        <Fragment key={row.id?.toString()}>
+                          {index === visibleRows.length - 1 ? (
+                            <TableRow
+                              ref={lastItem as any}
+                              tabIndex={-1}
+                              {...tableRowProps}>
+                              {row &&
+                                Object.keys(row).map((key) => {
+                                  if (!hiddenRows.includes(key as any)) {
+                                    return (
+                                      <TableCell
+                                        {...tableCellProps}
+                                        {...usePropsFromKey?.(
                                           key as keyof TData,
                                           tableCellProps ?? {}
-                                        )?.className
-                                      )}
-                                      key={key}
-                                      align={getCellAlignFromHeadCellAlign<TData>(
-                                        key,
-                                        headCells,
-                                        align
-                                      )}>
-                                      {renderRowCB?.(
-                                        row,
-                                        key as keyof (TData & {
-                                          id: string | number;
-                                        })
-                                      ) ??
-                                        (row[
+                                        )}
+                                        className={cn(
+                                          tableCellProps?.className,
+                                          usePropsFromKey?.(
+                                            key as keyof TData,
+                                            tableCellProps ?? {}
+                                          )?.className
+                                        )}
+                                        key={key}
+                                        align={getCellAlignFromHeadCellAlign<TData>(
+                                          key,
+                                          headCells,
+                                          align
+                                        )}>
+                                        {renderRowCB?.(
+                                          row,
                                           key as keyof (TData & {
                                             id: string | number;
                                           })
-                                        ] as ReactNode)}
-                                    </TableCell>
-                                  );
-                                } else {
-                                  return null;
-                                }
-                              })}
-                          </TableRow>
-                        ) : (
-                          <TableRow tabIndex={-1} {...tableRowProps}>
-                            {row &&
-                              Object.keys(row).map((key) => {
-                                if (!hiddenRows.includes(key as any)) {
-                                  return (
-                                    <TableCell
-                                      {...tableCellProps}
-                                      {...usePropsFromKey?.(
-                                        key as keyof TData,
-                                        tableCellProps ?? {}
-                                      )}
-                                      className={cn(
-                                        tableCellProps?.className,
-                                        usePropsFromKey?.(
+                                        ) ??
+                                          (row[
+                                            key as keyof (TData & {
+                                              id: string | number;
+                                            })
+                                          ] as ReactNode)}
+                                      </TableCell>
+                                    );
+                                  } else {
+                                    return null;
+                                  }
+                                })}
+                            </TableRow>
+                          ) : (
+                            <TableRow tabIndex={-1} {...tableRowProps}>
+                              {row &&
+                                Object.keys(row).map((key) => {
+                                  if (!hiddenRows.includes(key as any)) {
+                                    return (
+                                      <TableCell
+                                        {...tableCellProps}
+                                        {...usePropsFromKey?.(
                                           key as keyof TData,
                                           tableCellProps ?? {}
-                                        )?.className
-                                      )}
-                                      key={key}
-                                      align={getCellAlignFromHeadCellAlign<TData>(
-                                        key,
-                                        headCells,
-                                        align
-                                      )}>
-                                      {renderRowCB?.(
-                                        row,
-                                        key as keyof (TData & {
-                                          id: string | number;
-                                        })
-                                      ) ??
-                                        (row[
+                                        )}
+                                        className={cn(
+                                          tableCellProps?.className,
+                                          usePropsFromKey?.(
+                                            key as keyof TData,
+                                            tableCellProps ?? {}
+                                          )?.className
+                                        )}
+                                        key={key}
+                                        align={getCellAlignFromHeadCellAlign<TData>(
+                                          key,
+                                          headCells,
+                                          align
+                                        )}>
+                                        {renderRowCB?.(
+                                          row,
                                           key as keyof (TData & {
                                             id: string | number;
                                           })
-                                        ] as ReactNode)}
-                                    </TableCell>
-                                  );
-                                } else {
-                                  return null;
-                                }
-                              })}
-                          </TableRow>
-                        )}
-                      </Fragment>
-                    );
-                  })}
-                  {fallback && !visibleRows.length && (
-                    <TableRow
-                      {...fallbackTableRowProps}
-                      sx={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} {...fallbackTableCellProps}>
-                        {fallback}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
+                                        ) ??
+                                          (row[
+                                            key as keyof (TData & {
+                                              id: string | number;
+                                            })
+                                          ] as ReactNode)}
+                                      </TableCell>
+                                    );
+                                  } else {
+                                    return null;
+                                  }
+                                })}
+                            </TableRow>
+                          )}
+                        </Fragment>
+                      );
+                    })}
+                    {fallback && !visibleRows.length && (
+                      <TableRow
+                        {...fallbackTableRowProps}
+                        sx={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} {...fallbackTableCellProps}>
+                          {fallback}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                )}
               </Table>
             </TableContainer>
           </Box>
-          <Box
-            sx={{
-              borderRadius: "0 0 8px 8px",
-            }}
-            className={cn(
-              "w-full overflow-hidden bg-white transition-all",
-              stickyPagination && "sticky bottom-0",
-              shouldShowShadow && "shadow-top-lg"
-            )}>
-            <TablePagination
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} / ${count}`
-              }
-              labelRowsPerPage="筆數："
-              component="div"
-              page={page}
-              {...tablePaginationProps}
-              count={tablePaginationProps?.count ?? data.length}
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              rowsPerPageOptions={rowsPerPageOptions}
-            />
-          </Box>
+          {!disablePagination && (
+            <Box
+              sx={{
+                borderRadius: "0 0 8px 8px",
+              }}
+              className={cn(
+                "w-full overflow-hidden bg-white transition-all",
+                stickyPagination && "sticky bottom-0",
+                shouldShowShadow && "shadow-top-lg"
+              )}>
+              <TablePagination
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} / ${count}`
+                }
+                labelRowsPerPage="筆數："
+                component="div"
+                page={page}
+                {...tablePaginationProps}
+                count={tablePaginationProps?.count ?? data.length}
+                rowsPerPage={rowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={rowsPerPageOptions}
+              />
+            </Box>
+          )}
         </>
       )}
     </>
