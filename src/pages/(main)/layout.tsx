@@ -18,8 +18,7 @@ import { useNavigate } from "react-router-dom";
 import useDispatch from "@/hooks/use-app-dispatch";
 import projectConfig from "@/project.config.json";
 import { queryKey } from "@/constants";
-import useSelector from "@/hooks/use-app-selector";
-import { MaintenanceMode as MaintenanceModeFC } from "@/pages/maintenance/page";
+import MaintenanceModeProvider from "@/pages/maintenance/components/MaintenanceModeProvider";
 
 const enableMaintenanceMode = projectConfig.enableMaintenance.value;
 const enableMeAPI = projectConfig.enableMeAPI.value;
@@ -51,57 +50,18 @@ export const loader = withMaintenanceMode(
   }
 );
 
-const MMFC = () => {
-  const dispatch = useDispatch();
-  return (
-    <MaintenanceModeFC
-      useButton={{
-        onClick: () => {
-          dispatch(globalActions.toggleDialog({ visible: false }));
-        },
-      }}
-    />
-  );
-};
-
 /**
  * you can wrap the main layout with this provider
  */
-export const MainProvider = ({
-  children,
-  enableMe = enableMeAPI,
-}: {
-  children: ReactNode;
-  enableMe?: boolean;
-}) => {
+export const MainProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data: me, isError, isSuccess } = useGetMe();
-  const isNearMaintenanceMode = useSelector(
-    (state) => state.global.maintenanceMode?.isNear
-  );
-
-  /**
-   * handle maintenance mode
-   */
-  useEffect(() => {
-    if (isNearMaintenanceMode) {
-      dispatch(
-        globalActions.toggleDialog({
-          visible: true,
-          contentComponent: <MMFC />,
-        })
-      );
-    }
-  }, []);
 
   /**
    * handle me api
    */
   useEffect(() => {
-    if (!enableMe) {
-      return;
-    }
     if (isError) {
       navigate("/auth/login");
     }
@@ -115,18 +75,20 @@ export const MainProvider = ({
 export default function Layout(props: any) {
   return (
     <MainProvider>
-      <Drawer
-        {...props}
-        componentPlugins={{
-          DrawerHeader,
-          DrawerMenu,
-          DrawerMenuHeader,
-        }}
-        icons={{
-          DerivateIcon,
-          PatientListFillIcon,
-        }}
-      />
+      <MaintenanceModeProvider>
+        <Drawer
+          {...props}
+          componentPlugins={{
+            DrawerHeader,
+            DrawerMenu,
+            DrawerMenuHeader,
+          }}
+          icons={{
+            DerivateIcon,
+            PatientListFillIcon,
+          }}
+        />
+      </MaintenanceModeProvider>
     </MainProvider>
   );
 }

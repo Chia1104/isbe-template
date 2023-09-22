@@ -4,10 +4,8 @@ import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
 import Card from "@/components/Card";
 import Input, { type InputRef } from "@/components/form/Input";
 import { Link, useNavigate } from "react-router-dom";
-import { emailSchema, passwordSchema } from "@/utils/validator";
+import { emailSchema } from "@/utils/validator";
 import { useToken } from "@/services/authServices";
-import { globalActions } from "@/store/global.slice";
-import useDispatch from "@/hooks/use-app-dispatch";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,10 +14,12 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Helmet } from "react-helmet-async";
 import { queryClient } from "@/contexts/ReactQueryProvider";
 import { MeResponse } from "@/services/globalService";
+import useSnackbar from "@/hooks/use-snackbar";
+import { queryKey } from "@/constants";
 
 const Form: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
+  const showSnackbar = useSnackbar();
   const formSchema = z
     .object({
       email: emailSchema,
@@ -46,19 +46,17 @@ const Form: FC = () => {
     onSuccess: async (data) => {
       setCallbackError(false);
       setCallbackMessage("");
-      dispatch(
-        globalActions.snackbarRequest({
-          visible: true,
-          variant: "success",
-          content: `登入成功`,
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-        })
-      );
+      showSnackbar({
+        visible: true,
+        variant: "success",
+        content: `登入成功`,
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      });
       await queryClient.ensureQueryData({
-        queryKey: ["getMe"],
+        queryKey: [queryKey.me],
         queryFn: async () => {
           return await get<MeResponse>("/v1/me");
         },
@@ -166,12 +164,6 @@ const Form: FC = () => {
             name="password"
           />
         </div>
-        {/* <TextField */}
-        {/*  placeholder="請輸入驗證碼" */}
-        {/*  InputProps={{ */}
-        {/*    className: "rounded-[8px] h-[46px]", */}
-        {/*  }} */}
-        {/* /> */}
         <div className="flex justify-end">
           <Link
             to="/auth/reset-password:send"
