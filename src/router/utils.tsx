@@ -27,6 +27,12 @@ import { getAcl } from "@/services/aclServices";
 import { queryClient } from "@/contexts/ReactQueryProvider";
 import { MeResponse } from "@/services/globalService";
 import { queryKey } from "@/constants";
+import type { HTTPError } from "ky";
+import { get } from "@/utils/request";
+import projectConfig from "@/project.config.json";
+import { type Role } from "@/@types/roles";
+
+const enableMeAPI = projectConfig.enableMeAPI.value;
 
 export const appLoader = async ({ store, request, params }: LoaderRequest) => {
   return { store, request, params };
@@ -55,6 +61,35 @@ export const loadComponent = (
     console.error(err);
     return (error ?? <PageError />) as any;
   }
+};
+
+const hasRedirect = ({
+  redirect,
+  me,
+  acl,
+  needPermission,
+  useDevMode,
+}: {
+  redirect?: IsBeRoute["redirect"];
+  me: MeResponse | null;
+  acl: string[];
+  needPermission: boolean;
+  useDevMode?: {
+    enabled?: boolean;
+    env?: Env[];
+    roles?: Role[];
+  };
+}) => {
+  if (!redirect) return null;
+  if (typeof redirect === "string") {
+    return redirect;
+  }
+  return redirect({
+    me,
+    acl,
+    needPermission,
+    useDevMode,
+  });
 };
 
 export const createRoutes = (
@@ -100,13 +135,36 @@ export const createRoutes = (
           request.url.replace(window.location.origin, "")
         );
 
-        const me = queryClient.getQueryData<MeResponse>([queryKey.me]);
+        let me: MeResponse | null = null;
+        if (enableMeAPI && needPermission) {
+          try {
+            me = await queryClient.ensureQueryData<
+              MeResponse,
+              HTTPError,
+              MeResponse
+            >({
+              queryKey: [queryKey.me],
+              queryFn: () => get<MeResponse>(`v1/me`),
+              retry: false,
+            });
+          } catch (e) {
+            me = null;
+          }
+        }
 
         const rule = route.rule ? route.rule(me) : true;
         const isPermission =
           needPermission && route.acl
             ? getAcl(route.acl, route.useDevMode, me)
             : true;
+
+        const redirectPath = hasRedirect({
+          redirect: route.redirect,
+          me,
+          needPermission,
+          acl: route.acl ?? [],
+          useDevMode: route.useDevMode,
+        });
 
         // 合法語系
         if (
@@ -118,11 +176,11 @@ export const createRoutes = (
 
         // has redirect
         else if (
-          route.redirect &&
-          request.url.replace(window.location.origin, "") !== route.redirect &&
+          redirectPath &&
+          request.url.replace(window.location.origin, "") !== redirectPath &&
           matchPathRoute != null
         ) {
-          return redirect(lang ? `/${lang}${route.redirect}` : route.redirect);
+          return redirect(lang ? `/${lang}${redirectPath}` : redirectPath);
         } else if (!rule) {
           /**
            * handle custom rule

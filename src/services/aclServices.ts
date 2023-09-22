@@ -15,7 +15,7 @@ export const getAcl = (
     env?: Env[];
     roles?: Role[];
   },
-  initialData?: MeResponse
+  initialData?: MeResponse | null
 ) => {
   useDevMode ??= {};
   const {

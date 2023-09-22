@@ -43,7 +43,18 @@ declare interface IsBeRoute {
    * @description 重導路徑
    * @example "/foo"
    */
-  redirect?: RouteObject["redirect"];
+  redirect?:
+    | string
+    | ((ctx: {
+        me: MeResponse | null;
+        acl: string[];
+        needPermission: boolean;
+        useDevMode?: {
+          enabled?: boolean;
+          env?: Env[];
+          roles?: Role[];
+        };
+      }) => string | null | undefined);
   /**
    * @description 路由元件，可以是 "pages" 的元件，也可以用 `@roswell/layouts` 的 `Layout` 元件
    * @example "pages/foo" | "@roswell/Drawer"
