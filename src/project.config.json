@@ -27,7 +27,7 @@
     "filed": "input",
     "description": "是否啟動 me api",
     "refetchInterval": 900000,
-    "value": true
+    "value": false
   },
   "enableMaintenance": {
     "filed": "input",
