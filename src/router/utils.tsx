@@ -34,10 +34,6 @@ import { type Role } from "@/@types/roles";
 
 const enableMeAPI = projectConfig.enableMeAPI.value;
 
-export const appLoader = async ({ store, request, params }: LoaderRequest) => {
-  return { store, request, params };
-};
-
 export const loadComponent = (
   path: string,
   loading?: ReactElement,
@@ -198,6 +194,7 @@ export const createRoutes = (
               store,
               request,
               params,
+              me,
             });
           } else {
             return null;
@@ -244,7 +241,7 @@ export const createRouter = (store: EnhancedStore, isBeRoutes: IsBeRoute[]) => {
             );
           }
         }
-        return await appLoader({ store, request, params, me });
+        return { store, request, params, me } satisfies LoaderRequest;
       },
       errorElement: <PageError />,
     },

@@ -2,22 +2,14 @@ import { IntlProvider } from "react-intl";
 import { useSelector } from "react-redux";
 import { getGlobal } from "./store/states";
 import AppPlugins from "@/components/AppPlugins";
-import { Outlet, type Params } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import locales from "./locales";
-import type { EnhancedStore } from "@reduxjs/toolkit";
 import { HelmetProvider } from "react-helmet-async";
 import { ScrollRestoration } from "react-router-dom";
+import type { LoaderRequest } from "@/@types/loader";
 
-export const appLoader = async ({
-  store,
-  request,
-  params,
-}: {
-  store: EnhancedStore;
-  request: Request;
-  params: Params;
-}) => {
-  return { store, request, params };
+export const appLoader = async (loaderRequest: LoaderRequest) => {
+  return loaderRequest;
 };
 
 export const App = () => {
