@@ -1,7 +1,10 @@
 import { type ErrorResponse } from "@/@types/api";
 import { getBaseURL } from "@/utils";
-import { TOKEN, FORBIDDEN_ERROR } from "@/constants";
+import { FORBIDDEN_ERROR, queryKey } from "@/constants";
 import ky, { type Options, type HTTPError, type SearchParamsOption } from "ky";
+import store from "@/store";
+import { globalActions } from "@/store/global.slice";
+import { queryClient } from "@/contexts/ReactQueryProvider";
 
 const request = () => {
   return ky.extend({
@@ -18,18 +21,29 @@ const request = () => {
         async (error) => {
           const { response } = error;
           let res: ErrorResponse | null = null;
-          if (response.status === 403) {
-            if (response?.body) {
-              try {
-                res = (await error.response.clone().json()) as ErrorResponse;
-              } catch (err) {
-                res = null;
-              }
-            }
 
-            if (!res) {
-              error.name = FORBIDDEN_ERROR;
-              error.message = FORBIDDEN_ERROR;
+          switch (response?.status) {
+            case 403: {
+              if (response?.body) {
+                try {
+                  res = (await error.response.clone().json()) as ErrorResponse;
+                } catch (err) {
+                  res = null;
+                }
+              }
+
+              if (!res) {
+                error.name = FORBIDDEN_ERROR;
+                error.message = FORBIDDEN_ERROR;
+              }
+              break;
+            }
+            case 401: {
+              store.dispatch(globalActions.setAuthorized(false));
+              break;
+            }
+            default: {
+              break;
             }
           }
           return error;

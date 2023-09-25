@@ -82,6 +82,7 @@ export interface GlobalState {
       })
     | null;
   me?: MeResponse | null;
+  unAuthorized?: boolean;
 }
 
 export const initialGlobalState: GlobalState = {
@@ -127,6 +128,7 @@ export const initialGlobalState: GlobalState = {
   isDrawerOpen: true,
   maintenanceMode: null,
   me: null,
+  unAuthorized: false,
 };
 
 export const globalSlice = createSlice({
@@ -176,8 +178,16 @@ export const globalSlice = createSlice({
     setMe(state, action: PayloadAction<MeResponse | null>) {
       state.me = action.payload;
     },
-    resetGlobalState(state) {
-      state = initialGlobalState;
+    resetGlobalState() {
+      return initialGlobalState;
+    },
+    /**
+     * @description THE ACTION SHOULD BE DISPATCHED WHEN THE USER LOGGED IN OR LOGGED OUT.
+     * @param state
+     * @param action
+     */
+    setAuthorized(state, action: PayloadAction<boolean>) {
+      state.unAuthorized = !action.payload;
     },
   },
 });

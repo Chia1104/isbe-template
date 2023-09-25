@@ -19,6 +19,8 @@ import useDispatch from "@/hooks/use-app-dispatch";
 import projectConfig from "@/project.config.json";
 import { queryKey } from "@/constants";
 import MaintenanceModeProvider from "@/pages/maintenance/components/MaintenanceModeProvider";
+import { useLogout } from "@/services/authServices";
+import useSelector from "@/hooks/use-app-selector";
 
 const enableMaintenanceMode = projectConfig.enableMaintenance.value;
 const enableMeAPI = projectConfig.enableMeAPI.value;
@@ -57,18 +59,28 @@ export const MainProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data: me, isError, isSuccess } = useGetMe();
+  const unAuthorized = useSelector((state) => state.global.unAuthorized);
+  const { logout } = useLogout();
 
   /**
    * handle me api
    */
   useEffect(() => {
-    if (isError) {
+    if (isError || unAuthorized) {
+      logout();
+      dispatch(
+        globalActions.snackbarRequest({
+          variant: "warning",
+          visible: true,
+          content: "請重新登入",
+        })
+      );
       navigate("/auth/login");
     }
     if (me && isSuccess) {
       dispatch(globalActions.setMe(me));
     }
-  }, [me, isError, isSuccess]);
+  }, [me, isError, isSuccess, unAuthorized]);
   return children;
 };
 
