@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MeResponse } from "@/services/globalService";
 import { IS_PRODUCTION } from "@/constants";
 import { queryKey } from "@/constants";
+import { queryClient } from "@/contexts/ReactQueryProvider";
 
 interface Props {
   children?: ReactNode;
@@ -41,7 +42,6 @@ export const isDevMode = (
   env: Env[] = ["beta", "local"],
   roles: Role[] = ["superAdmin"]
 ) => {
-  const queryClient = useQueryClient();
   const data = queryClient.getQueryData<MeResponse>([queryKey.me])?.data?.roles;
   const isAdmin = Object.keys(data || {}).some((key) =>
     roles.includes(key as Role)
