@@ -26,7 +26,7 @@ export const handleMaintenanceMode = (
     if (
       mode?.enabled &&
       currentTime >= mode.startTimestamp - duration &&
-      currentTime <= mode.endTimestamp + duration
+      currentTime <= mode.endTimestamp
     ) {
       const warningThreshold = mode.startTimestamp - duration;
       matchingMode = {
@@ -62,6 +62,6 @@ export const withMaintenanceMode = <TResult = unknown>(
     ) {
       return redirect("/maintenance");
     }
-    return await loader(loaderRequest);
+    return loader(loaderRequest);
   };
 };
