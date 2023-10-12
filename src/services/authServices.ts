@@ -2,12 +2,11 @@ import { type ErrorResponse } from "@/@types/api";
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import { sha3_512 } from "@/utils";
 import { post, del } from "@/utils/request";
-import { TOKEN } from "@/constants";
+import { TOKEN, queryKey } from "@/constants";
 import { type HTTPError } from "ky";
 import { queryClient } from "@/contexts/ReactQueryProvider";
 import useDispatch from "@/hooks/use-app-dispatch";
 import { globalActions } from "@/store/global.slice";
-import { queryKey } from "@/constants";
 
 export interface TokenDTO {
   account: string;

@@ -2,9 +2,8 @@ import { queryClient } from "@/contexts/ReactQueryProvider";
 import { type MeResponse } from "@/services/globalService";
 import _ from "lodash";
 import ProjectConfig from "@/project.config.json";
-import { Role } from "@/@types/roles";
-import { IS_PRODUCTION } from "@/constants";
-import { queryKey } from "@/constants";
+import { type Role } from "@/@types/roles";
+import { IS_PRODUCTION, queryKey } from "@/constants";
 
 const permissionType = ProjectConfig.permissionType.value;
 

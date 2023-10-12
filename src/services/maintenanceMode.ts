@@ -18,7 +18,7 @@ export const handleMaintenanceMode = (
   let matchingMode: (MaintenanceMode & { isNear?: boolean }) | null = null;
   const sort = maintenanceMode.sort((a, b) => {
     return a.startTimestamp - b.startTimestamp;
-  }) as MaintenanceMode[];
+  });
   some<MaintenanceMode>(sort, (mode) => {
     const duration = dayjs
       .duration(mode?.threshold?.time ?? 0, mode?.threshold?.unit ?? "minutes")
@@ -40,6 +40,7 @@ export const handleMaintenanceMode = (
   });
 
   loaderRequest.store.dispatch(globalActions.setMaintenanceMode(matchingMode));
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return matchingMode! as MaintenanceMode & { isNear?: boolean };
 };
 
@@ -62,6 +63,6 @@ export const withMaintenanceMode = <TResult = unknown>(
     ) {
       return redirect("/maintenance");
     }
-    return loader(loaderRequest);
+    return await loader(loaderRequest);
   };
 };

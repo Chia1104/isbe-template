@@ -28,9 +28,7 @@ export interface DefaultTablePageState {
 //   },
 // ] satisfies TablePageState[];
 
-export interface TablePageState {
-  [key: string]: DefaultTablePageState;
-}
+export type TablePageState = Record<string, DefaultTablePageState>;
 
 export const initialTablePageState: TablePageState[] = [];
 

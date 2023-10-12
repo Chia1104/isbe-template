@@ -7,10 +7,10 @@ import {
   Outlet,
   redirect,
   type RouteObject,
+  type LoaderFunctionArgs,
 } from "react-router-dom";
 import Loadable, { type LoadableClassComponent } from "@loadable/component";
 import PageLoading from "@/components/PageLoading";
-import { type LoaderFunctionArgs } from "react-router-dom";
 import { type EnhancedStore } from "@reduxjs/toolkit";
 import LayoutLoading from "@/components/LayoutLoading";
 import PageError from "@/pages/error";
@@ -19,20 +19,19 @@ import { langs, languagesConfig } from "@roswell/hooks";
 import type { ReactElement } from "react";
 import React from "react";
 import App from "@/App";
-import { AppDispatch } from "@/store";
-import { globalActions, Locale } from "@/store/global.slice";
+import { type AppDispatch } from "@/store";
+import { globalActions, type Locale } from "@/store/global.slice";
 import _ from "lodash";
 import ProjectConfig from "@/project.config.json";
 import { getAcl } from "@/services/aclServices";
 import { queryClient } from "@/contexts/ReactQueryProvider";
-import { MeResponse } from "@/services/globalService";
+import { type MeResponse } from "@/services/globalService";
 import { queryKey } from "@/constants";
 import type { HTTPError } from "ky";
 import { get } from "@/utils/request";
-import projectConfig from "@/project.config.json";
 import { type Role } from "@/@types/roles";
 
-const enableMeAPI = projectConfig.enableMeAPI.value;
+const enableMeAPI = ProjectConfig.enableMeAPI.value;
 
 export const loadComponent = (
   path: string,
@@ -140,7 +139,7 @@ export const createRoutes = (
               MeResponse
             >({
               queryKey: [queryKey.me],
-              queryFn: () => get<MeResponse>(`v1/me`),
+              queryFn: async () => await get<MeResponse>(`v1/me`),
               retry: false,
             });
           } catch (e) {

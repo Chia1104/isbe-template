@@ -30,7 +30,7 @@ declare interface IsBeRoute {
   /**
    * @description 可以放客製化的 `loading`，預設為 app 的 `AppLoading`
    */
-  loading?: ReactElement;
+  loading?: JSX.Element;
   /**
    * @description breadcrumb 的名稱
    */

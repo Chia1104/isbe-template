@@ -11,7 +11,7 @@ export const createLoader = <TResult = unknown>(
   loader: (loaderRequest: LoaderRequest) => Promise<TResult> | TResult | null
 ) => {
   return async (loaderRequest: LoaderRequest) => {
-    return loader(loaderRequest);
+    return await loader(loaderRequest);
   };
 };
 
@@ -21,9 +21,9 @@ export const useLoaderData = <TResult = unknown>() =>
 export const defer = <TData extends Record<string, unknown>>(data: TData) =>
   unsafe_defer(data) as Awaited<TData>;
 
-export interface AwaitResolveRenderFunction<TData = unknown> {
-  (data: Awaited<TData>): React.ReactNode;
-}
+export type AwaitResolveRenderFunction<TData = unknown> = (
+  data: Awaited<TData>
+) => React.ReactNode;
 
 export interface AwaitProps<TData = unknown> {
   children: React.ReactNode | AwaitResolveRenderFunction<TData>;

@@ -1,9 +1,8 @@
 import { type FC, type ReactNode, useMemo } from "react";
 import { type Role } from "@/@types/roles";
 import { useQueryClient } from "@tanstack/react-query";
-import { MeResponse } from "@/services/globalService";
-import { IS_PRODUCTION } from "@/constants";
-import { queryKey } from "@/constants";
+import { type MeResponse } from "@/services/globalService";
+import { IS_PRODUCTION, queryKey } from "@/constants";
 import { queryClient } from "@/contexts/ReactQueryProvider";
 
 interface Props {
