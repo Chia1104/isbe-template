@@ -35,7 +35,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: '💽️  Init'
         id: pull-init
@@ -43,21 +42,14 @@ jobs:
 
       - name: '📦  Install'
         id: pull-install
-        uses: './.github/actions/install@master'
-
-#      - name: '🔺️  Cache (turbo)'
-#        id: pull-cache-turbo
-#        uses: './.github/actions/cache-turbo'
-#        with:
-#          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-#          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+        uses: './.github/actions/install'
 
       - name: '🚨️  Lint, TypeCheck, Test'
         id: pull-lint
         uses: './.github/actions/lint'
         with:
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ env.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ env.TURBO_TOKEN }}
 
 #      # https://docs.github.com/en/actions/learn-github-actions/expressions
 #      - name: '📛  Commit Message'

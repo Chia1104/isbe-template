@@ -6,9 +6,6 @@ inputs:
     description: 'Dynamic Build String for Run Script'
     default: 'build'
     required: false
-  OPTIONAL_BUILD_COMMAND:
-    description: 'Optional Build String for Run Script'
-    required: false
   TURBO_TOKEN:
     description: 'Turbo Token'
     required: false
@@ -26,4 +23,4 @@ runs:
         TURBO_TOKEN: ${{ inputs.TURBO_TOKEN }}
         TURBO_TEAM: ${{ inputs.TURBO_TEAM }}
       run: |
-        pnpm run ${{ inputs.BUILD_COMMAND }} ${{ inputs.OPTIONAL_BUILD_COMMAND }}
+        pnpm run ${{ inputs.BUILD_COMMAND }}
